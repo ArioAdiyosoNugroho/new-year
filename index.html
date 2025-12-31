@@ -401,11 +401,14 @@
             }
             
             .celebration-title {
-                font-size: 3rem;
+                font-size: 5.3rem;
             }
             
             .celebration-subtitle {
-                font-size: 1.8rem;
+                font-size: 2rem;
+            }
+            .celebration-message{
+                font-size: 1rem;
             }
         }
     </style>
@@ -464,15 +467,12 @@
         <h1 class="celebration-title pulse">2026</h1>
         <p class="celebration-subtitle float">Selamat Tahun Baru!</p>
         <div class="celebration-message">
-            🎊 Semoga Penuh Kebahagiaan 🎊
+            "New Year New Me😜"
         </div>
     </div>
 
     <script>
-        // PERBAIKAN: Gunakan tanggal yang benar untuk Tahun Baru 2026
-// Tes: Target adalah waktu sekarang ditambah 10 detik
-const targetDate = new Date().getTime() + 10000;        
-        // Untuk testing: 10 detik dari sekarang
+        const targetDate = new Date('January 1, 2026 00:00:00').getTime();        // Untuk testing: 10 detik dari sekarang
         // const targetDate = new Date().getTime() + 10000;
         
         let fireworksActive = false;

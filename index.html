@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hitung Mundur Tahun Baru 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Great+Vibes&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #000000 0%, #060147 100%);
+            position: relative;
+            cursor: pointer; /* Menandakan bisa diklik */
+        }
+        
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        .torii-gate {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 800px;
+            height: 300px;
+            z-index: 1;
+        }
+        
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(to bottom, transparent 0%, #0a0a0a 50%, #000000 100%);
+            z-index: 1;
+        }
+        
+        .countdown-container {
+            position: relative;
+            z-index: 10;
+            transition: all 0.5s ease;
+        }
+        
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            pointer-events: none;
+            box-shadow: 0 0 10px currentColor;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        .trail {
+            position: absolute;
+            width: 3px;
+            height: 20px;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        
+        .glow {
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+                         0 0 40px rgba(255, 255, 255, 0.6),
+                         0 0 60px rgba(255, 255, 255, 0.4);
+        }
+        
+        .glow-gold {
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.8),
+                         0 0 60px rgba(255, 215, 0, 0.6),
+                         0 0 90px rgba(255, 215, 0, 0.4);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Overlay untuk izin audio */
+        #startOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            transition: opacity 0.5s;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+
+    <div id="startOverlay" onclick="enableAudio()">
+        <h2 class="text-3xl font-bold mb-4">🎵 Klik Layar Untuk Mengaktifkan Suara 🎵</h2>
+        <p class="animate-pulse">Ketuk di mana saja untuk memulai...</p>
+    </div>
+
+    <div class="stars" id="starsContainer"></div>
+    
+    <svg class="torii-gate" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+        <rect x="50" y="80" width="700" height="25" fill="#8B0000" rx="5"/>
+        <rect x="30" y="75" width="740" height="15" fill="#A52A2A" rx="3"/>
+        <rect x="100" y="140" width="600" height="20" fill="#8B0000" rx="3"/>
+        <rect x="150" y="90" width="60" height="210" fill="#8B0000" rx="5"/>
+        <rect x="145" y="85" width="70" height="10" fill="#A52A2A"/>
+        <rect x="145" y="295" width="70" height="15" fill="#6B0000"/>
+        <rect x="590" y="90" width="60" height="210" fill="#8B0000" rx="5"/>
+        <rect x="585" y="85" width="70" height="10" fill="#A52A2A"/>
+        <rect x="585" y="295" width="70" height="15" fill="#6B0000"/>
+        <circle cx="180" cy="130" r="8" fill="#FFD700"/>
+        <circle cx="620" cy="130" r="8" fill="#FFD700"/>
+    </svg>
+    
+    <div class="ground"></div>
+
+    <div id="countdownView" class="countdown-container text-center px-4">
+        <h1 class="text-5xl md:text-7xl font-bold text-white mb-8 glow float">Tahun 2025</h1>
+        <div class="flex justify-center gap-4 md:gap-8 mb-8">
+            <div class="bg-white bg-opacity-10 backdrop-blur-xl rounded-2xl p-6 md:p-8 min-w-[80px] md:min-w-[120px] pulse border border-white border-opacity-20">
+                <div id="days" class="text-4xl md:text-6xl font-bold text-white mb-2">00</div>
+                <div class="text-sm md:text-lg text-white opacity-80">Hari</div>
+            </div>
+            <div class="bg-white bg-opacity-10 backdrop-blur-xl rounded-2xl p-6 md:p-8 min-w-[80px] md:min-w-[120px] pulse border border-white border-opacity-20">
+                <div id="hours" class="text-4xl md:text-6xl font-bold text-white mb-2">00</div>
+                <div class="text-sm md:text-lg text-white opacity-80">Jam</div>
+            </div>
+            <div class="bg-white bg-opacity-10 backdrop-blur-xl rounded-2xl p-6 md:p-8 min-w-[80px] md:min-w-[120px] pulse border border-white border-opacity-20">
+                <div id="minutes" class="text-4xl md:text-6xl font-bold text-white mb-2">00</div>
+                <div class="text-sm md:text-lg text-white opacity-80">Menit</div>
+            </div>
+            <div class="bg-white bg-opacity-10 backdrop-blur-xl rounded-2xl p-6 md:p-8 min-w-[80px] md:min-w-[120px] pulse border border-white border-opacity-20">
+                <div id="seconds" class="text-4xl md:text-6xl font-bold text-white mb-2">00</div>
+                <div class="text-sm md:text-lg text-white opacity-80">Detik</div>
+            </div>
+        </div>
+        <p class="text-xl md:text-2xl text-white opacity-90">Menuju Tahun yang Penuh Harapan</p>
+    </div>
+    
+    <div id="celebrationView" class="countdown-container hidden flex flex-col items-center justify-center min-h-[60vh] px-4 relative z-50">
+        
+        <h1 class="text-8xl md:text-[10rem] font-black mb-4 leading-none tracking-wider pulse" 
+            style="font-family: 'Cinzel Decorative', cursive; 
+                   background: linear-gradient(to bottom, #FFF7D6 0%, #FFD700 50%, #B8860B 100%);
+                   -webkit-background-clip: text;
+                   -webkit-text-fill-color: transparent;
+                   filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.6));">
+            2026
+        </h1>
+    
+        <p class="text-5xl md:text-7xl text-white mb-6 float" 
+           style="font-family: 'Great Vibes', cursive; text-shadow: 0 0 20px rgba(255,255,255,0.5);">
+            Selamat Tahun Baru!
+        </p>
+    
+        <div class="bg-black bg-opacity-30 backdrop-blur-sm px-8 py-3 rounded-full border border-white border-opacity-10 mt-4">
+            <p class="text-xl md:text-2xl text-yellow-100 tracking-wide" 
+               style="font-family: 'Poppins', sans-serif;">
+               🎊 Semoga Penuh Kebahagiaan 🎊
+            </p>
+        </div>
+    
+    </div>
+
+    <script>
+        // SETWAKTU: Ubah +10000 menjadi waktu yang diinginkan
+        const targetDate = new Date().getTime() + 10000; 
+        
+        let fireworksActive = false;
+        let lastSecond = -1;
+        let audioEnabled = false;
+
+        // --- SISTEM AUDIO BARU (REALISTIS) ---
+        // Kita menggunakan array URL agar bisa diganti dengan mudah
+        // Catatan: Jika link mati, ganti dengan file lokal (misal: 'suara/launch.mp3')
+        const audioSources = {
+            launch: [
+                'sound/6.mp3',
+            ],
+            explode: [
+                'sound/7.mp3', // Boom 1
+                'sound/4.wav', // Boom 2
+                'sound/5.wav', // Boom 3
+            ]
+        };
+
+        // Fungsi untuk mengaktifkan audio (kebijakan browser)
+        function enableAudio() {
+            audioEnabled = true;
+            document.getElementById('startOverlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('startOverlay').style.display = 'none';
+            }, 500);
+            
+            // Memainkan suara 'tick' sekali untuk "memanaskan" engine audio
+            playTick(); 
+        }
+
+        // Fungsi pemutar efek suara
+        function playSfx(type) {
+            if (!audioEnabled) return;
+
+            const urls = audioSources[type];
+            // Pilih suara secara acak agar bervariasi
+            const randomUrl = urls[Math.floor(Math.random() * urls.length)];
+            
+            const audio = new Audio(randomUrl);
+            audio.volume = type === 'launch' ? 0.3 : 0.6; // Launch lebih pelan
+            
+            // Trik untuk memutar suara berulang kali tanpa delay
+            audio.play().catch(e => console.log('Audio blocked, need interaction'));
+        }
+
+        // Create stars
+        const starsContainer = document.getElementById('starsContainer');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 70 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            starsContainer.appendChild(star);
+        }
+        
+        // Audio Context untuk suara detik (TICK) tetap menggunakan synthesizer
+        // karena lebih akurat untuk metronome
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playTick() {
+            if (!audioEnabled) return;
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+        
+        // Fungsi melodi perayaan sederhana
+        function playCelebration() {
+            if (!audioEnabled) return;
+            // Melodi simple
+            const notes = [523.25, 659.25, 783.99, 1046.50];
+            notes.forEach((freq, index) => {
+                setTimeout(() => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    oscillator.frequency.value = freq;
+                    oscillator.type = 'sine';
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.5);
+                }, index * 150);
+            });
+        }
+        
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+            
+            if (distance < 0) {
+                if (!fireworksActive) {
+                    showCelebration();
+                }
+                return;
+            }
+            
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            if (seconds !== lastSecond && seconds <= 10) {
+                playTick();
+                lastSecond = seconds;
+            }
+            
+            document.getElementById('days').textContent = String(days).padStart(2, '0');
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+        }
+        
+        function showCelebration() {
+            fireworksActive = true;
+            playCelebration();
+            document.getElementById('countdownView').classList.add('hidden');
+            document.getElementById('celebrationView').classList.remove('hidden');
+            startFireworks();
+        }
+        
+        function createTrail(startX, startY, endX, endY, color) {
+            const trail = document.createElement('div');
+            trail.className = 'trail';
+            trail.style.left = startX + 'px';
+            trail.style.top = startY + 'px';
+            trail.style.background = `linear-gradient(to top, ${color}, transparent)`;
+            document.body.appendChild(trail);
+            
+            const angle = Math.atan2(endY - startY, endX - startX);
+            const distance = Math.hypot(endX - startX, endY - startY);
+            
+            trail.style.transform = `rotate(${angle + Math.PI/2}rad)`;
+            trail.style.height = '30px';
+            
+            setTimeout(() => trail.remove(), 100);
+        }
+        
+        function createFirework() {
+            // SOUND EFFECT: Play Launch Sound (Meluncur)
+            playSfx('launch');
+
+            const colors = [
+                '#ff0040', '#ff6b00', '#ffff00', '#00ff88', '#00b8ff', 
+                '#8000ff', '#ff00ff', '#ff0080', '#ffd700', '#ff1493'
+            ];
+            const startX = Math.random() * window.innerWidth;
+            const startY = window.innerHeight;
+            const endX = startX + (Math.random() - 0.5) * 300;
+            const endY = Math.random() * (window.innerHeight * 0.3) + 100;
+            
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            
+            const firework = document.createElement('div');
+            firework.className = 'firework';
+            firework.style.left = startX + 'px';
+            firework.style.top = startY + 'px';
+            firework.style.backgroundColor = color;
+            document.body.appendChild(firework);
+            
+            const duration = 1000 + Math.random() * 500;
+            let lastX = startX;
+            let lastY = startY;
+            
+            const animation = firework.animate([
+                { transform: 'translateY(0) scale(1)', opacity: 1 },
+                { transform: `translate(${endX - startX}px, ${endY - startY}px) scale(1.5)`, opacity: 1 }
+            ], {
+                duration: duration,
+                easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+            });
+            
+            const trailInterval = setInterval(() => {
+                const rect = firework.getBoundingClientRect();
+                createTrail(rect.left, rect.top, lastX, lastY, color);
+                lastX = rect.left;
+                lastY = rect.top;
+            }, 30);
+            
+            setTimeout(() => {
+                clearInterval(trailInterval);
+                explode(endX, endY, color);
+                
+                // SOUND EFFECT: Play Explosion (Meledak)
+                playSfx('explode');
+                
+                firework.remove();
+            }, duration);
+        }
+        
+        function explode(x, y, color) {
+            const particleCount = 80;
+            const rings = 2;
+            
+            for (let ring = 0; ring < rings; ring++) {
+                const ringDelay = ring * 50;
+                const ringParticles = particleCount / rings;
+                
+                for (let i = 0; i < ringParticles; i++) {
+                    setTimeout(() => {
+                        const particle = document.createElement('div');
+                        particle.className = 'particle';
+                        const size = Math.random() * 4 + 3;
+                        particle.style.width = size + 'px';
+                        particle.style.height = size + 'px';
+                        particle.style.left = x + 'px';
+                        particle.style.top = y + 'px';
+                        particle.style.backgroundColor = color;
+                        particle.style.boxShadow = `0 0 ${size * 3}px ${color}`;
+                        document.body.appendChild(particle);
+                        
+                        const angle = (Math.PI * 2 * i) / ringParticles;
+                        const velocity = 150 + Math.random() * 100 + ring * 30;
+                        const tx = Math.cos(angle) * velocity;
+                        const ty = Math.sin(angle) * velocity;
+                        
+                        particle.animate([
+                            { 
+                                transform: 'translate(0, 0) scale(1)', 
+                                opacity: 1 
+                            },
+                            { 
+                                transform: `translate(${tx}px, ${ty + 50}px) scale(0)`, 
+                                opacity: 0 
+                            }
+                        ], {
+                            duration: 1500 + Math.random() * 500,
+                            easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+                        });
+                        
+                        setTimeout(() => particle.remove(), 2000);
+                    }, ringDelay);
+                }
+            }
+        }
+        
+        function startFireworks() {
+            setInterval(() => {
+                if (fireworksActive) {
+                    createFirework();
+                }
+            }, 400); // Interval kembang api
+            
+            // Burst awal
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => createFirework(), i * 100);
+            }
+        }
+        
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>

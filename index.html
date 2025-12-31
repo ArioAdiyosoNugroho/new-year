@@ -2,26 +2,50 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Hitung Mundur Tahun Baru 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Great+Vibes&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Great+Vibes&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
     <style>
-        body {
+        :root {
+            --safe-area-top: env(safe-area-inset-top, 0px);
+            --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        
+        * {
+            box-sizing: border-box;
             margin: 0;
-            overflow: hidden;
+            padding: 0;
+        }
+        
+        html, body {
+            overflow-x: hidden;
+            overflow-y: auto;
+            width: 100%;
+            height: 100%;
+        }
+        
+        body {
             background: linear-gradient(135deg, #000000 0%, #060147 100%);
             position: relative;
-            cursor: pointer; /* Menandakan bisa diklik */
+            cursor: pointer;
+            min-height: 100vh;
+            padding-top: var(--safe-area-top);
+            padding-bottom: var(--safe-area-bottom);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         
         .stars {
-            position: absolute;
+            position: fixed;
             width: 100%;
             height: 100%;
             overflow: hidden;
+            z-index: 0;
         }
         
         .star {
@@ -38,65 +62,79 @@
             50% { opacity: 1; }
         }
         
-        .torii-gate {
-            position: absolute;
+        .torii-container {
+            position: fixed;
             bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 0;
+            width: 100%;
+            z-index: 5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+        
+        .torii-gate {
             width: 100%;
             max-width: 800px;
-            height: 300px;
-            z-index: 1;
+            height: auto;
+            min-height: 150px;
+            max-height: 250px;
+            pointer-events: none;
         }
         
         .ground {
-            position: absolute;
+            position: fixed;
             bottom: 0;
             width: 100%;
-            height: 150px;
-            background: linear-gradient(to bottom, transparent 0%, #0a0a0a 50%, #000000 100%);
-            z-index: 1;
+            height: 20vh;
+            min-height: 80px;
+            background: linear-gradient(to bottom, transparent 0%, #0a0a0a 60%, #000000 100%);
+            z-index: 4;
         }
         
         .countdown-container {
             position: relative;
             z-index: 10;
             transition: all 0.5s ease;
+            width: 100%;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;
         }
         
         .firework {
-            position: absolute;
-            width: 5px;
-            height: 5px;
+            position: fixed;
+            width: 4px;
+            height: 4px;
             border-radius: 50%;
             pointer-events: none;
-            box-shadow: 0 0 10px currentColor;
+            box-shadow: 0 0 8px currentColor;
+            z-index: 20;
         }
         
         .particle {
-            position: absolute;
+            position: fixed;
             border-radius: 50%;
             pointer-events: none;
+            z-index: 20;
         }
         
         .trail {
-            position: absolute;
-            width: 3px;
-            height: 20px;
+            position: fixed;
+            width: 2px;
+            height: 15px;
             pointer-events: none;
             opacity: 0.6;
+            z-index: 20;
         }
         
         .glow {
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
-                         0 0 40px rgba(255, 255, 255, 0.6),
-                         0 0 60px rgba(255, 255, 255, 0.4);
-        }
-        
-        .glow-gold {
-            text-shadow: 0 0 30px rgba(255, 215, 0, 0.8),
-                         0 0 60px rgba(255, 215, 0, 0.6),
-                         0 0 90px rgba(255, 215, 0, 0.4);
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.8),
+                         0 0 30px rgba(255, 255, 255, 0.6),
+                         0 0 45px rgba(255, 255, 255, 0.4);
         }
         
         @keyframes pulse {
@@ -110,7 +148,7 @@
         
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+            50% { transform: translateY(-10px); }
         }
         
         .float {
@@ -123,98 +161,324 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 999;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
             color: white;
             transition: opacity 0.5s;
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        /* Mobile First Design */
+        .main-title {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            width: 100%;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .countdown-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto 1.5rem auto;
+        }
+        
+        .countdown-item {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-height: 90px;
+        }
+        
+        .countdown-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            line-height: 1.2;
+            text-align: center;
+        }
+        
+        .countdown-label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            margin-top: 0.3rem;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            padding: 0 1rem;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        /* Celebration View - Fixed Position & Hidden by Default */
+        #celebrationView {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1rem;
+            /* background: rgba(0, 0, 0, 0.7); */
+            pointer-events: all;
+        }
+        
+        #celebrationView.active {
+            display: flex;
+        }
+        
+        .celebration-title {
+            font-size: 4rem;
+            font-family: 'Cinzel Decorative', cursive;
+            background: linear-gradient(to bottom, #FFF7D6 0%, #FFD700 50%, #B8860B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.6));
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+        
+        .celebration-subtitle {
+            font-size: 2rem;
+            font-family: 'Great Vibes', cursive;
+            color: white;
+            text-shadow: 0 0 15px rgba(255,255,255,0.5);
+            margin-bottom: 1.5rem;
+        }
+        
+        .celebration-message {
+            font-size: 1.1rem;
+            font-family: 'Poppins', sans-serif;
+            color: #FFD700;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Countdown View - Ensure it's always visible when active */
+        #countdownView {
+            position: relative;
+            z-index: 10;
+            display: flex;
+        }
+        
+        #countdownView.hidden {
+            display: none !important;
+        }
+        
+        /* Tablet */
+        @media (min-width: 481px) {
+            .main-title {
+                font-size: 2.5rem;
+            }
+            
+            .countdown-grid {
+                grid-template-columns: repeat(4, 1fr);
+                max-width: 500px;
+                gap: 1rem;
+            }
+            
+            .countdown-item {
+                min-height: 100px;
+                padding: 1rem;
+            }
+            
+            .countdown-number {
+                font-size: 2.2rem;
+            }
+            
+            .countdown-label {
+                font-size: 1rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+                max-width: 400px;
+            }
+            
+            .celebration-title {
+                font-size: 5rem;
+            }
+            
+            .celebration-subtitle {
+                font-size: 2.5rem;
+            }
+        }
+        
+        /* Desktop */
+        @media (min-width: 769px) {
+            .main-title {
+                font-size: 3.5rem;
+                margin-bottom: 3rem;
+            }
+            
+            .countdown-grid {
+                max-width: 800px;
+                gap: 1.5rem;
+            }
+            
+            .countdown-item {
+                min-height: 140px;
+                padding: 1.5rem;
+                border-radius: 20px;
+            }
+            
+            .countdown-number {
+                font-size: 3.5rem;
+            }
+            
+            .countdown-label {
+                font-size: 1.3rem;
+            }
+            
+            .subtitle {
+                font-size: 1.5rem;
+                max-width: 500px;
+            }
+            
+            .celebration-title {
+                font-size: 8rem;
+            }
+            
+            .celebration-subtitle {
+                font-size: 4rem;
+            }
+            
+            .celebration-message {
+                font-size: 1.5rem;
+                padding: 1rem 2rem;
+            }
+        }
+        
+        /* Very Small Phones */
+        @media (max-width: 360px) {
+            .countdown-grid {
+                max-width: 280px;
+                gap: 0.6rem;
+            }
+            
+            .countdown-item {
+                min-height: 80px;
+                padding: 0.6rem;
+            }
+            
+            .countdown-number {
+                font-size: 1.5rem;
+            }
+            
+            .countdown-label {
+                font-size: 0.75rem;
+            }
+            
+            .main-title {
+                font-size: 1.8rem;
+            }
+            
+            .celebration-title {
+                font-size: 3rem;
+            }
+            
+            .celebration-subtitle {
+                font-size: 1.8rem;
+            }
         }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen">
+<body>
 
     <div id="startOverlay" onclick="enableAudio()">
-        <h2 class="text-3xl font-bold mb-4">🎵 Klik Layar Untuk Mengaktifkan Suara 🎵</h2>
-        <p class="animate-pulse">Ketuk di mana saja untuk memulai...</p>
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 px-4">🎵 Klik Layar Untuk Mengaktifkan Suara 🎵</h2>
+        <p class="animate-pulse text-lg sm:text-xl">Ketuk di mana saja untuk memulai...</p>
     </div>
 
     <div class="stars" id="starsContainer"></div>
     
-    <svg class="torii-gate" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
-        <rect x="50" y="80" width="700" height="25" fill="#8B0000" rx="5"/>
-        <rect x="30" y="75" width="740" height="15" fill="#A52A2A" rx="3"/>
-        <rect x="100" y="140" width="600" height="20" fill="#8B0000" rx="3"/>
-        <rect x="150" y="90" width="60" height="210" fill="#8B0000" rx="5"/>
-        <rect x="145" y="85" width="70" height="10" fill="#A52A2A"/>
-        <rect x="145" y="295" width="70" height="15" fill="#6B0000"/>
-        <rect x="590" y="90" width="60" height="210" fill="#8B0000" rx="5"/>
-        <rect x="585" y="85" width="70" height="10" fill="#A52A2A"/>
-        <rect x="585" y="295" width="70" height="15" fill="#6B0000"/>
-        <circle cx="180" cy="130" r="8" fill="#FFD700"/>
-        <circle cx="620" cy="130" r="8" fill="#FFD700"/>
-    </svg>
+    <div class="torii-container">
+        <svg class="torii-gate" viewBox="0 0 800 300" preserveAspectRatio="xMidYMid meet">
+            <rect x="50" y="80" width="700" height="25" fill="#8B0000" rx="5"/>
+            <rect x="30" y="75" width="740" height="15" fill="#A52A2A" rx="3"/>
+            <rect x="100" y="140" width="600" height="20" fill="#8B0000" rx="3"/>
+            <rect x="150" y="90" width="60" height="210" fill="#8B0000" rx="5"/>
+            <rect x="145" y="85" width="70" height="10" fill="#A52A2A"/>
+            <rect x="145" y="295" width="70" height="15" fill="#6B0000"/>
+            <rect x="590" y="90" width="60" height="210" fill="#8B0000" rx="5"/>
+            <rect x="585" y="85" width="70" height="10" fill="#A52A2A"/>
+            <rect x="585" y="295" width="70" height="15" fill="#6B0000"/>
+            <circle cx="180" cy="130" r="8" fill="#FFD700"/>
+            <circle cx="620" cy="130" r="8" fill="#FFD700"/>
+        </svg>
+    </div>
     
     <div class="ground"></div>
 
-    <div id="countdownView" class="countdown-container text-center px-4">
-        <h1 class="text-5xl md:text-7xl font-bold text-white mb-8 glow float">Tahun 2025</h1>
-        <div class="flex justify-center gap-4 md:gap-8 mb-8">
-            <div class="bg-white bg-opacity-10 backdrop-blur-xl rounded-2xl p-6 md:p-8 min-w-[80px] md:min-w-[120px] pulse border border-white border-opacity-20">
-                <div id="days" class="text-4xl md:text-6xl font-bold text-white mb-2">00</div>
-                <div class="text-sm md:text-lg text-white opacity-80">Hari</div>
+    <div id="countdownView" class="countdown-container">
+        <h1 class="main-title glow float">Tahun 2025</h1>
+        <div class="countdown-grid">
+            <div class="countdown-item pulse">
+                <div id="days" class="countdown-number">00</div>
+                <div class="countdown-label">Hari</div>
             </div>
-            <div class="bg-white bg-opacity-10 backdrop-blur-xl rounded-2xl p-6 md:p-8 min-w-[80px] md:min-w-[120px] pulse border border-white border-opacity-20">
-                <div id="hours" class="text-4xl md:text-6xl font-bold text-white mb-2">00</div>
-                <div class="text-sm md:text-lg text-white opacity-80">Jam</div>
+            <div class="countdown-item pulse">
+                <div id="hours" class="countdown-number">00</div>
+                <div class="countdown-label">Jam</div>
             </div>
-            <div class="bg-white bg-opacity-10 backdrop-blur-xl rounded-2xl p-6 md:p-8 min-w-[80px] md:min-w-[120px] pulse border border-white border-opacity-20">
-                <div id="minutes" class="text-4xl md:text-6xl font-bold text-white mb-2">00</div>
-                <div class="text-sm md:text-lg text-white opacity-80">Menit</div>
+            <div class="countdown-item pulse">
+                <div id="minutes" class="countdown-number">00</div>
+                <div class="countdown-label">Menit</div>
             </div>
-            <div class="bg-white bg-opacity-10 backdrop-blur-xl rounded-2xl p-6 md:p-8 min-w-[80px] md:min-w-[120px] pulse border border-white border-opacity-20">
-                <div id="seconds" class="text-4xl md:text-6xl font-bold text-white mb-2">00</div>
-                <div class="text-sm md:text-lg text-white opacity-80">Detik</div>
+            <div class="countdown-item pulse">
+                <div id="seconds" class="countdown-number">00</div>
+                <div class="countdown-label">Detik</div>
             </div>
         </div>
-        <p class="text-xl md:text-2xl text-white opacity-90">Menuju Tahun yang Penuh Harapan</p>
+        <p class="subtitle">Menuju Tahun yang Penuh Harapan</p>
     </div>
     
-    <div id="celebrationView" class="countdown-container hidden flex flex-col items-center justify-center min-h-[60vh] px-4 relative z-50">
-        
-        <h1 class="text-8xl md:text-[10rem] font-black mb-4 leading-none tracking-wider pulse" 
-            style="font-family: 'Cinzel Decorative', cursive; 
-                   background: linear-gradient(to bottom, #FFF7D6 0%, #FFD700 50%, #B8860B 100%);
-                   -webkit-background-clip: text;
-                   -webkit-text-fill-color: transparent;
-                   filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.6));">
-            2026
-        </h1>
-    
-        <p class="text-5xl md:text-7xl text-white mb-6 float" 
-           style="font-family: 'Great Vibes', cursive; text-shadow: 0 0 20px rgba(255,255,255,0.5);">
-            Selamat Tahun Baru!
-        </p>
-    
-        <div class="bg-black bg-opacity-30 backdrop-blur-sm px-8 py-3 rounded-full border border-white border-opacity-10 mt-4">
-            <p class="text-xl md:text-2xl text-yellow-100 tracking-wide" 
-               style="font-family: 'Poppins', sans-serif;">
-               🎊 "New Year New Me😜" 🎊
-            </p>
+    <div id="celebrationView">
+        <h1 class="celebration-title pulse">2026</h1>
+        <p class="celebration-subtitle float">Selamat Tahun Baru!</p>
+        <div class="celebration-message">
+            🎊 Semoga Penuh Kebahagiaan 🎊
         </div>
-
-        
-    
     </div>
 
     <script>
-        const targetDate = new Date().getTime() + 10000;       
+        // PERBAIKAN: Gunakan tanggal yang benar untuk Tahun Baru 2026
+// Tes: Target adalah waktu sekarang ditambah 10 detik
+const targetDate = new Date().getTime() + 10000;        
+        // Untuk testing: 10 detik dari sekarang
+        // const targetDate = new Date().getTime() + 10000;
+        
         let fireworksActive = false;
         let lastSecond = -1;
         let audioEnabled = false;
-
+        let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
         const audioSources = {
             launch: [
@@ -229,12 +493,14 @@
 
         function enableAudio() {
             audioEnabled = true;
-            document.getElementById('startOverlay').style.opacity = '0';
+            const overlay = document.getElementById('startOverlay');
+            overlay.style.opacity = '0';
             setTimeout(() => {
-                document.getElementById('startOverlay').style.display = 'none';
+                overlay.style.display = 'none';
             }, 500);
             
-            playTick(); 
+            // Initialize audio context
+            initAudioContext();
         }
 
         function playSfx(type) {
@@ -244,14 +510,15 @@
             const randomUrl = urls[Math.floor(Math.random() * urls.length)];
             
             const audio = new Audio(randomUrl);
-            audio.volume = type === 'launch' ? 0.3 : 0.6; 
+            audio.volume = type === 'launch' ? (isMobile ? 0.2 : 0.3) : (isMobile ? 0.4 : 0.6); 
             
-            audio.play().catch(e => console.log('Audio blocked, need interaction'));
+            audio.play().catch(e => console.log('Audio play error:', e));
         }
 
         // Create stars
         const starsContainer = document.getElementById('starsContainer');
-        for (let i = 0; i < 100; i++) {
+        const starCount = isMobile ? 50 : 100;
+        for (let i = 0; i < starCount; i++) {
             const star = document.createElement('div');
             star.className = 'star';
             star.style.left = Math.random() * 100 + '%';
@@ -259,53 +526,83 @@
             star.style.animationDelay = Math.random() * 3 + 's';
             starsContainer.appendChild(star);
         }
-        
 
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        let audioContext;
+        
+        function initAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            return audioContext;
+        }
         
         function playTick() {
             if (!audioEnabled) return;
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
             
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.frequency.value = 800;
-            oscillator.type = 'sine';
-            
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.1);
+            try {
+                const ctx = initAudioContext();
+                if (ctx.state === 'suspended') {
+                    ctx.resume();
+                }
+                
+                const oscillator = ctx.createOscillator();
+                const gainNode = ctx.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(ctx.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+                
+                oscillator.start(ctx.currentTime);
+                oscillator.stop(ctx.currentTime + 0.1);
+            } catch (e) {
+                console.log('Audio error:', e);
+            }
         }
         
         function playCelebration() {
             if (!audioEnabled) return;
-            const notes = [523.25, 659.25, 783.99, 1046.50];
-            notes.forEach((freq, index) => {
-                setTimeout(() => {
-                    const oscillator = audioContext.createOscillator();
-                    const gainNode = audioContext.createGain();
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
-                    oscillator.frequency.value = freq;
-                    oscillator.type = 'sine';
-                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-                    oscillator.start(audioContext.currentTime);
-                    oscillator.stop(audioContext.currentTime + 0.5);
-                }, index * 150);
-            });
+            
+            try {
+                const ctx = initAudioContext();
+                if (ctx.state === 'suspended') {
+                    ctx.resume();
+                }
+                
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, index) => {
+                    setTimeout(() => {
+                        const oscillator = ctx.createOscillator();
+                        const gainNode = ctx.createGain();
+                        oscillator.connect(gainNode);
+                        gainNode.connect(ctx.destination);
+                        oscillator.frequency.value = freq;
+                        oscillator.type = 'sine';
+                        gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+                        oscillator.start(ctx.currentTime);
+                        oscillator.stop(ctx.currentTime + 0.5);
+                    }, index * 150);
+                });
+            } catch (e) {
+                console.log('Celebration audio error:', e);
+            }
         }
         
         function updateCountdown() {
             const now = new Date().getTime();
             const distance = targetDate - now;
             
+            // PERBAIKAN: Tambah console log untuk debugging
+            console.log('Distance to target:', distance, 'Fireworks active:', fireworksActive);
+            
             if (distance < 0) {
                 if (!fireworksActive) {
+                    console.log('Waktu habis! Menampilkan celebration...');
                     showCelebration();
                 }
                 return;
@@ -328,11 +625,25 @@
         }
         
         function showCelebration() {
+            console.log('Memulai celebration...');
             fireworksActive = true;
             playCelebration();
+            
+            // PERBAIKAN: Pastikan countdown view disembunyikan
             document.getElementById('countdownView').classList.add('hidden');
-            document.getElementById('celebrationView').classList.remove('hidden');
+            
+            // PERBAIKAN: Pastikan celebration view ditampilkan dengan benar
+            const celebrationView = document.getElementById('celebrationView');
+            celebrationView.style.display = 'flex';
+            celebrationView.classList.add('active');
+            
+            // Scroll ke atas
+            window.scrollTo(0, 0);
+            
+            // Start fireworks
             startFireworks();
+            
+            console.log('Celebration view ditampilkan');
         }
         
         function createTrail(startX, startY, endX, endY, color) {
@@ -344,12 +655,15 @@
             document.body.appendChild(trail);
             
             const angle = Math.atan2(endY - startY, endX - startX);
-            const distance = Math.hypot(endX - startX, endY - startY);
             
             trail.style.transform = `rotate(${angle + Math.PI/2}rad)`;
-            trail.style.height = '30px';
+            trail.style.height = '20px';
             
-            setTimeout(() => trail.remove(), 100);
+            setTimeout(() => {
+                if (trail.parentNode) {
+                    trail.remove();
+                }
+            }, 100);
         }
         
         function createFirework() {
@@ -362,7 +676,7 @@
             const startX = Math.random() * window.innerWidth;
             const startY = window.innerHeight;
             const endX = startX + (Math.random() - 0.5) * 300;
-            const endY = Math.random() * (window.innerHeight * 0.3) + 100;
+            const endY = Math.random() * (window.innerHeight * 0.4) + 100;
             
             const color = colors[Math.floor(Math.random() * colors.length)];
             
@@ -398,13 +712,15 @@
                 
                 playSfx('explode');
                 
-                firework.remove();
+                if (firework.parentNode) {
+                    firework.remove();
+                }
             }, duration);
         }
         
         function explode(x, y, color) {
-            const particleCount = 80;
-            const rings = 2;
+            const particleCount = isMobile ? 40 : 70;
+            const rings = isMobile ? 1 : 2;
             
             for (let ring = 0; ring < rings; ring++) {
                 const ringDelay = ring * 50;
@@ -414,13 +730,13 @@
                     setTimeout(() => {
                         const particle = document.createElement('div');
                         particle.className = 'particle';
-                        const size = Math.random() * 4 + 3;
+                        const size = Math.random() * 3 + 2;
                         particle.style.width = size + 'px';
                         particle.style.height = size + 'px';
                         particle.style.left = x + 'px';
                         particle.style.top = y + 'px';
                         particle.style.backgroundColor = color;
-                        particle.style.boxShadow = `0 0 ${size * 3}px ${color}`;
+                        particle.style.boxShadow = `0 0 ${size * 2}px ${color}`;
                         document.body.appendChild(particle);
                         
                         const angle = (Math.PI * 2 * i) / ringParticles;
@@ -442,27 +758,71 @@
                             easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
                         });
                         
-                        setTimeout(() => particle.remove(), 2000);
+                        setTimeout(() => {
+                            if (particle.parentNode) {
+                                particle.remove();
+                            }
+                        }, 2000);
                     }, ringDelay);
                 }
             }
         }
         
         function startFireworks() {
-            setInterval(() => {
+            const interval = isMobile ? 800 : 400;
+            
+            const fireworksInterval = setInterval(() => {
                 if (fireworksActive) {
                     createFirework();
+                } else {
+                    clearInterval(fireworksInterval);
                 }
-            }, 400); 
+            }, interval);
             
             // Burst awal
-            for (let i = 0; i < 5; i++) {
-                setTimeout(() => createFirework(), i * 100);
+            for (let i = 0; i < (isMobile ? 3 : 5); i++) {
+                setTimeout(() => createFirework(), i * 200);
             }
         }
         
+        // Handle window resize
+        function handleResize() {
+            isMobile = window.innerWidth <= 768 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        }
+        
+        window.addEventListener('resize', handleResize);
+        
+        // Initialize
         updateCountdown();
         setInterval(updateCountdown, 1000);
+        
+        // Initial detection
+        handleResize();
+        
+        // Pastikan celebration view benar-benar tersembunyi di awal
+        document.addEventListener('DOMContentLoaded', function() {
+            const celebrationView = document.getElementById('celebrationView');
+            celebrationView.style.display = 'none';
+            celebrationView.classList.remove('active');
+            
+            // Reset scroll position
+            window.scrollTo(0, 0);
+            
+            // Untuk testing cepat: uncomment baris berikut untuk melihat celebration view
+            // setTimeout(() => showCelebration(), 1000);
+        });
+        
+        // Prevent scroll pada body
+        document.body.addEventListener('touchmove', function(e) {
+            if (!fireworksActive) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
+        // PERBAIKAN: Tambah event listener untuk klik body untuk testing
+        document.body.addEventListener('click', function() {
+            console.log('Body clicked, fireworksActive:', fireworksActive);
+        });
     </script>
 </body>
 </html>

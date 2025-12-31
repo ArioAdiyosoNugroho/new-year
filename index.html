@@ -117,7 +117,6 @@
             animation: float 3s ease-in-out infinite;
         }
 
-        /* Overlay untuk izin audio */
         #startOverlay {
             position: fixed;
             top: 0;
@@ -202,35 +201,32 @@
         <div class="bg-black bg-opacity-30 backdrop-blur-sm px-8 py-3 rounded-full border border-white border-opacity-10 mt-4">
             <p class="text-xl md:text-2xl text-yellow-100 tracking-wide" 
                style="font-family: 'Poppins', sans-serif;">
-               🎊 Semoga Penuh Kebahagiaan 🎊
+               🎊 "New Year New Me😜" 🎊
             </p>
         </div>
+
+        
     
     </div>
 
     <script>
-        // SETWAKTU: Ubah +10000 menjadi waktu yang diinginkan
-        const targetDate = new Date().getTime() + 10000; 
-        
+        const targetDate = new Date().getTime() + 10000;       
         let fireworksActive = false;
         let lastSecond = -1;
         let audioEnabled = false;
 
-        // --- SISTEM AUDIO BARU (REALISTIS) ---
-        // Kita menggunakan array URL agar bisa diganti dengan mudah
-        // Catatan: Jika link mati, ganti dengan file lokal (misal: 'suara/launch.mp3')
+
         const audioSources = {
             launch: [
                 'sound/6.mp3',
             ],
             explode: [
-                'sound/7.mp3', // Boom 1
-                'sound/4.wav', // Boom 2
-                'sound/5.wav', // Boom 3
+                'sound/7.mp3',
+                'sound/4.wav', 
+                'sound/5.wav', 
             ]
         };
 
-        // Fungsi untuk mengaktifkan audio (kebijakan browser)
         function enableAudio() {
             audioEnabled = true;
             document.getElementById('startOverlay').style.opacity = '0';
@@ -238,22 +234,18 @@
                 document.getElementById('startOverlay').style.display = 'none';
             }, 500);
             
-            // Memainkan suara 'tick' sekali untuk "memanaskan" engine audio
             playTick(); 
         }
 
-        // Fungsi pemutar efek suara
         function playSfx(type) {
             if (!audioEnabled) return;
 
             const urls = audioSources[type];
-            // Pilih suara secara acak agar bervariasi
             const randomUrl = urls[Math.floor(Math.random() * urls.length)];
             
             const audio = new Audio(randomUrl);
-            audio.volume = type === 'launch' ? 0.3 : 0.6; // Launch lebih pelan
+            audio.volume = type === 'launch' ? 0.3 : 0.6; 
             
-            // Trik untuk memutar suara berulang kali tanpa delay
             audio.play().catch(e => console.log('Audio blocked, need interaction'));
         }
 
@@ -268,8 +260,7 @@
             starsContainer.appendChild(star);
         }
         
-        // Audio Context untuk suara detik (TICK) tetap menggunakan synthesizer
-        // karena lebih akurat untuk metronome
+
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         
         function playTick() {
@@ -290,10 +281,8 @@
             oscillator.stop(audioContext.currentTime + 0.1);
         }
         
-        // Fungsi melodi perayaan sederhana
         function playCelebration() {
             if (!audioEnabled) return;
-            // Melodi simple
             const notes = [523.25, 659.25, 783.99, 1046.50];
             notes.forEach((freq, index) => {
                 setTimeout(() => {
@@ -364,7 +353,6 @@
         }
         
         function createFirework() {
-            // SOUND EFFECT: Play Launch Sound (Meluncur)
             playSfx('launch');
 
             const colors = [
@@ -408,7 +396,6 @@
                 clearInterval(trailInterval);
                 explode(endX, endY, color);
                 
-                // SOUND EFFECT: Play Explosion (Meledak)
                 playSfx('explode');
                 
                 firework.remove();
@@ -466,7 +453,7 @@
                 if (fireworksActive) {
                     createFirework();
                 }
-            }, 400); // Interval kembang api
+            }, 400); 
             
             // Burst awal
             for (let i = 0; i < 5; i++) {
